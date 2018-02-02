@@ -1,7 +1,8 @@
 import codecs
 import struct
+import binascii
 
-folder='/home/cooli7wa/study/tensorflow_data/fuzzing_data/'
+folder='/home/cooli7wa/PycharmProjects/tensorflow/fuzzing/data/'
 
 f = open(folder+'fuzzing_train_12000', 'r')
 f1 = open(folder+'fuzzing_train_12000.dat', 'wb')
@@ -12,9 +13,8 @@ for line in f:
         if str == '\n':
             continue
         hex = int(str, 16)
-        f1.write(struct.pack('i', hex))
-        # f1.write(('%s'%hex).encode())
-    f1.write('\n'.encode())
+        # f1.write(struct.pack('i', hex))
+        f1.write(binascii.a2b_uu(chr(hex)))
 
 f.close()
 f1.close()
