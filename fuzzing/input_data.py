@@ -35,7 +35,7 @@ def input(filenames):
     return data, label
 
 
-def for_test():
+def show():
     folder = 'E:\\PycharmProjects\\dl_study\\fuzzing\\data\\'
     # file_list = [folder+'success_train_12000.dat', folder+'fuzzing_train_12000.dat']
     file_list = [folder+'mix_train_24000.dat']
@@ -52,4 +52,4 @@ def for_test():
         coord.join(threads)
 
 if __name__ == '__main__':
-    for_test()
+    show()

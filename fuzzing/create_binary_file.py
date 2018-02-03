@@ -4,7 +4,7 @@ folder='E:\\PycharmProjects\\dl_study\\fuzzing\\data\\'
 ori_files=os.listdir(folder)
 target_files=[]
 for file in ori_files:
-    if re.match(r'^(fuzzing|success)[^\.]+$', file):
+    if re.match(r'^mix_(train|test)[^\.]+$', file):
         target_files.append(file)
 
 for file in target_files:
