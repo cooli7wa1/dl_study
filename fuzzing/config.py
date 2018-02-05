@@ -15,9 +15,10 @@ tf.app.flags.DEFINE_integer('min_after_dequeue', 20,
                             """min_after_dequeue""")
 tf.app.flags.DEFINE_integer('learning_rate', 1,
                             """learning_rate""")
-
-tf.app.flags.DEFINE_string('data_dir', 'E:\\PycharmProjects\\dl_study\\fuzzing\\data\\',
-                           """data directory""")
+tf.app.flags.DEFINE_integer('log_frequency', 1,
+                            """How often to log results to the console.""")
+# tf.app.flags.DEFINE_string('data_dir', 'E:\\PycharmProjects\\dl_study\\fuzzing\\data\\', """data directory""")
+tf.app.flags.DEFINE_string('data_dir', '/home/cooli7wa/Documents/dl_study/fuzzing/data/', """data directory""")
 tf.app.flags.DEFINE_string('train_data', 'mix_train_24000.dat',
                            """train data""")
 tf.app.flags.DEFINE_string('test_data', 'mix_test_6000.dat',
