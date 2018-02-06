@@ -10,10 +10,10 @@ def train():
 
         with tf.device('/cpu:0'):
             images, labels = function.get_inputs(eval_data=False)
-        for i in range(images.shape[0]):
-            logits = function.inference(images[i])
-            loss = function.loss(logits, labels[i])
-            train_op = function.train_op(loss, global_step)
+
+        logits = function.inference(images)
+        loss = function.loss(logits, labels)
+        train_op = function.train_op(loss, global_step)
 
         class _LoggerHook(tf.train.SessionRunHook):
             """Logs loss and runtime."""

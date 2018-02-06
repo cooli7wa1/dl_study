@@ -19,18 +19,27 @@ def inference(images):
                        tf.truncated_normal_initializer(stddev=5e-2, dtype=tf.float32))
     b1 = _get_variable('biases1', [20], tf.constant_initializer(0.0))
     out1 = tf.nn.relu(tf.matmul(images, w1) + b1, name='layer1')
-    w2 = _get_variable('weights2', [20, 1],
+    w2 = _get_variable('weights2', [20, 2],
                        tf.truncated_normal_initializer(stddev=5e-2, dtype=tf.float32))
-    b2 = _get_variable('biases2', [1], tf.constant_initializer(0.0))
+    b2 = _get_variable('biases2', [2], tf.constant_initializer(0.0))
     out2 = tf.nn.relu(tf.matmul(out1, w2) + b2, name='layer2')
     return out2
 
 def loss(logits, labels):
-    labels = tf.cast(labels, tf.int64)
-    cross_entropy = tf.nn.sparse_softmax_cross_entropy_with_logits(
-        labels=labels, logits=logits, name='cross_entropy_per_example')
+    softmax = tf.nn.softmax(logits)
+    print("logits: %s"%logits.shape)
+    print("labels: %s"%labels.shape)
+    print("softmax: %s"%softmax.shape)
+    tf.Print(labels*tf.log(softmax), [labels*tf.log(softmax)], message="softmax")
+    cross_entropy = -tf.reduce_sum(labels*tf.log(softmax))
     cross_entropy_mean = tf.reduce_mean(cross_entropy, name='cross_entropy')
     return cross_entropy_mean
+
+    # labels = tf.reshape(labels, [10,])
+    # cross_entropy = tf.nn.sparse_softmax_cross_entropy_with_logits(
+    #     labels=labels, logits=logits, name='cross_entropy_per_example')
+    # cross_entropy_mean = tf.reduce_mean(cross_entropy, name='cross_entropy')
+    # return cross_entropy_mean
 
 def train_op(total_loss, global_step):
     opt = tf.train.GradientDescentOptimizer(FLAGS.learning_rate)

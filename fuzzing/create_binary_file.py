@@ -1,11 +1,14 @@
 import os, re
 
-folder='E:\\PycharmProjects\\dl_study\\fuzzing\\data\\'
+# folder='E:\\PycharmProjects\\dl_study\\fuzzing\\data\\'
+folder='/home/cooli7wa/Documents/dl_study/fuzzing/data/'
 ori_files=os.listdir(folder)
 target_files=[]
 for file in ori_files:
     if re.match(r'^mix_(train|test)[^\.]+$', file):
         target_files.append(file)
+
+target_files=["mix_train_24000_test"]
 
 for file in target_files:
     print('deal with %s ...'%file)
@@ -20,7 +23,3 @@ for file in target_files:
             f1.write(hex.to_bytes(1, byteorder='big'))
     f.close()
     f1.close()
-
-# f1 = open(folder+'fuzzing_train_12000.dat', 'rb')
-# print(struct.unpack('i', f1.read()[:4]))
-# f1.close()

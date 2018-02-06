@@ -13,12 +13,12 @@ def _read(filename_queue):
     result.key, value = reader.read(filename_queue)
     record_bytes = tf.decode_raw(value, tf.uint8, little_endian=False)
     result.label = tf.cast(tf.strided_slice(record_bytes, [0],
-                                            [label_bytes]), tf.int32)
+                                            [label_bytes]), tf.float32)
     result.data = tf.cast(tf.strided_slice(record_bytes, [label_bytes],
                        [label_bytes + data_bytes]), tf.float32)
-    
-    result.data = tf.reshape(result.data, [1,FLAGS.data_size])
-    result.label.set_shape([1])
+    result.label = tf.reshape(result.label, [FLAGS.label_size])
+    result.data = tf.reshape(result.data, [FLAGS.data_size])
+    # result.label.set_shape([1,])
     return result
 
 
