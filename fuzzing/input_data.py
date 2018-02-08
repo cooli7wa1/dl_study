@@ -18,7 +18,6 @@ def _read(filename_queue):
                        [label_bytes + data_bytes]), tf.float32)
     result.label = tf.reshape(result.label, [FLAGS.label_size])
     result.data = tf.reshape(result.data, [FLAGS.data_size])
-    # result.label.set_shape([1,])
     return result
 
 
@@ -43,6 +42,7 @@ def show():
         threads = tf.train.start_queue_runners(coord=coord)
         out_data, out_label = sess.run((data, label))
         print(np.shape(data), np.shape(label))
+        print(np.shape(out_data), np.shape(out_label))
         for i in range(10):
             print(out_label[i])
         print(out_data[0])

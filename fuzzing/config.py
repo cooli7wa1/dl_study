@@ -7,13 +7,13 @@ tf.app.flags.DEFINE_integer('data_size', 192,
                             """data length""")
 tf.app.flags.DEFINE_integer('label_size', 2,
                             """label length""")
-tf.app.flags.DEFINE_integer('batch_size', 50,
+tf.app.flags.DEFINE_integer('batch_size', 20,
                             """batch_size""")
-tf.app.flags.DEFINE_integer('capacity', 150,
+tf.app.flags.DEFINE_integer('capacity', 20000,
                             """capacity""")
-tf.app.flags.DEFINE_integer('min_after_dequeue', 100,
+tf.app.flags.DEFINE_integer('min_after_dequeue', 1500,
                             """min_after_dequeue""")
-tf.app.flags.DEFINE_integer('learning_rate', 0.001,
+tf.app.flags.DEFINE_integer('learning_rate', 0.01,
                             """learning_rate""")
 tf.app.flags.DEFINE_integer('log_frequency', 10,
                             """How often to log results to the console.""")

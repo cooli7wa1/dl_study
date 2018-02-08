@@ -10,10 +10,15 @@ def train():
 
         with tf.device('/cpu:0'):
             images, labels = function.get_inputs(eval_data=False)
+            test_images, test_lables = function.get_inputs(eval_data=True)
 
         logits = function.inference(images)
         loss = function.loss(logits, labels)
         train_op = function.train_op(loss, global_step)
+
+        test_logits = function.test(test_images)
+        correct_prediction = tf.equal(tf.argmax(test_logits, 1), tf.argmax(test_lables, 1))
+        accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
 
         class _LoggerHook(tf.train.SessionRunHook):
             """Logs loss and runtime."""
@@ -41,12 +46,14 @@ def train():
                     print(format_str % (datetime.now(), self._step, loss_value,
                                         examples_per_sec, sec_per_batch))
 
+
         with tf.train.MonitoredTrainingSession(
                 hooks=[tf.train.StopAtStepHook(last_step=config.FLAGS.max_steps),
                        tf.train.NanTensorHook(loss),
                        _LoggerHook()],
                 ) as mon_sess:
             while not mon_sess.should_stop():
+                print("acc: %s"%mon_sess.run(accuracy))
                 mon_sess.run(train_op)
 
 def main(argv=None):
