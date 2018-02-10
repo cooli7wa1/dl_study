@@ -39,9 +39,9 @@ def parse_raw_date(input_file, output_file, label = None):
        import struct
        with open(output_file+".label","wb") as of:
            for i in label_list:
-               res_array = "\0x00\0x01"
+               res_array = b'\x00\x01'
                if i == 1:
-                   res_array = "\0x01\0x00"
+                   res_array = b'\x01\x00'
                of.write(res_array)
     #save info
     with open(output_file+".info.json","w") as of:
