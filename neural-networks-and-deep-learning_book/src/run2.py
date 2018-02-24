@@ -8,11 +8,14 @@ training_data, validation_data, test_data = \
 time_load_e = datetime.datetime.now()
 print("load time: %s" % (time_load_e-time_load_s))
 
-net = network2.Network([784, 100, 10], cost=network2.CrossEntropyCost)
+net = network2.Network([784, 30, 30, 10], cost=network2.CrossEntropyCost)
 net.large_weight_initializer()
 
 time_train_s = datetime.datetime.now()
-net.SGD(training_data, 30, 10, 0.5, evaluation_data=test_data, monitor_evaluation_accuracy=True)
+net.SGD(training_data, 30, 10, 0.1,
+        evaluation_data=validation_data,
+        monitor_evaluation_accuracy=True,
+        lmbda=5.0)
 time_train_e = datetime.datetime.now()
 
 print("load time: %s" % (time_load_e-time_load_s))
