@@ -2,9 +2,9 @@ import os
 import binascii
 import random
 
-FUZZING_FOLDER = 'E:\\PycharmProjects\\dl_study\\fuzzing\\hangyu\\data\\fuzzing'
-NORMAL_FOLDER = 'E:\\PycharmProjects\\dl_study\\fuzzing\\hangyu\\data\\normal'
-OUTPUT_FOLDER = 'E:\\PycharmProjects\\dl_study\\fuzzing\\hangyu\\data\\'
+FUZZING_FOLDER = 'E:\\PycharmProjects\\dl_study\\fuzzing\\new\\data\\fuzzing'
+NORMAL_FOLDER = 'E:\\PycharmProjects\\dl_study\\fuzzing\\new\\data\\normal'
+OUTPUT_FOLDER = 'E:\\PycharmProjects\\dl_study\\fuzzing\\new\\data\\'
 PROPORTION = 2/3  # train_data/total_data
 LOG_FILE = OUTPUT_FOLDER + 'gen.log'
 
@@ -56,6 +56,20 @@ def devide_data(list, output_dir):
             f.write(line)
     log.append('train file size %d' % os.path.getsize(output_dir+'train.dat'))
     log.append('test file size %d' % os.path.getsize(output_dir+'test.dat'))
+
+    test_fuzzing_data = []
+    test_normal_data = []
+    for line in list[train_num:]:
+        if line[:2] == b'\x00\x01':
+            test_fuzzing_data.append(line)
+        else:
+            test_normal_data.append(line)
+    with open(output_dir + 'test_fuzzing.dat', 'wb') as f:
+        for line in test_fuzzing_data:
+            f.write(line)
+    with open(output_dir + 'test_normal.dat', 'wb') as f:
+        for line in test_normal_data:
+            f.write(line)
 
 if __name__ == "__main__":
     fuzzing_bin_list = parse_raw_data_to_bin_list(FUZZING_FOLDER, '0001')

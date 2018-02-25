@@ -74,11 +74,11 @@ label_mini_batches = [
 
 for i in range(EPOCH):
     for j in range(len(data_mini_batches)):
-        sess.run(train_step, feed_dict={x: data_mini_batches[i],
-                                        y_: label_mini_batches[i],
+        sess.run(train_step, feed_dict={x: data_mini_batches[j],
+                                        y_: label_mini_batches[j],
                                         keep_prob: 0.5})
-        loss = sess.run(cross_entropy, feed_dict={x: data_mini_batches[i],
-                                        y_: label_mini_batches[i],
+        loss = sess.run(cross_entropy, feed_dict={x: data_mini_batches[j],
+                                        y_: label_mini_batches[j],
                                         keep_prob: 0.5})
         acc_test = sess.run(accuracy, feed_dict={x: test_X, y_: test_y, keep_prob: 1.0})
         acc_train = sess.run(accuracy, feed_dict={x: train_X, y_: train_y, keep_prob: 1.0})
