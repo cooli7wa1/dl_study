@@ -1,18 +1,18 @@
 origin data number: 38840
 non-repeat data number: 32696
 bin_list len 32696
-bin_list[0] len 193
+bin_list[0] len 194
 == deal fuzzing .. done
 origin data number: 17135
 non-repeat data number: 16287
 bin_list len 16287
-bin_list[0] len 193
+bin_list[0] len 194
 == deal normal .. done
 list1 len 32696, list2 len 16287, min lne 16287
 intercept_list len 32574
 == intercept .. done
 == shuffle .. done
 total_num 32574, train_num 21716
-train file size 4191188
-test file size 2095594
+train file size 4212904
+test file size 2106452
 == devide .. done

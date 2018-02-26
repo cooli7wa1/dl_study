@@ -2,12 +2,9 @@ import os
 import binascii
 import random
 
-# FUZZING_FOLDER = 'E:\\PycharmProjects\\dl_study\\fuzzing\\new\\data\\fuzzing'
-# NORMAL_FOLDER = 'E:\\PycharmProjects\\dl_study\\fuzzing\\new\\data\\normal'
-# OUTPUT_FOLDER = 'E:\\PycharmProjects\\dl_study\\fuzzing\\new\\data\\'
-FUZZING_FOLDER = '/home/cooli7wa/Documents/dl_study/fuzzing/new/data/fuzzing'
-NORMAL_FOLDER = '/home/cooli7wa/Documents/dl_study/fuzzing/new/data/normal'
-OUTPUT_FOLDER = '/home/cooli7wa/Documents/dl_study/fuzzing/new/data/'
+FUZZING_FOLDER = './fuzzing'
+NORMAL_FOLDER = './normal'
+OUTPUT_FOLDER = './'
 PROPORTION = 2/3  # train_data/total_data
 LOG_FILE = OUTPUT_FOLDER + 'gen.log'
 
@@ -75,14 +72,14 @@ def devide_data(list, output_dir):
             f.write(line)
 
 if __name__ == "__main__":
-    fuzzing_bin_list = parse_raw_data_to_bin_list(FUZZING_FOLDER, '01')
-    log.append("== deal fuzzing .. done")
-    normal_bin_list = parse_raw_data_to_bin_list(NORMAL_FOLDER, '00')
-    log.append("== deal normal .. done")
-    # fuzzing_bin_list = parse_raw_data_to_bin_list(FUZZING_FOLDER, '0001')
+    # fuzzing_bin_list = parse_raw_data_to_bin_list(FUZZING_FOLDER, '01')
     # log.append("== deal fuzzing .. done")
-    # normal_bin_list = parse_raw_data_to_bin_list(NORMAL_FOLDER, '0100')
+    # normal_bin_list = parse_raw_data_to_bin_list(NORMAL_FOLDER, '00')
     # log.append("== deal normal .. done")
+    fuzzing_bin_list = parse_raw_data_to_bin_list(FUZZING_FOLDER, '0001')
+    log.append("== deal fuzzing .. done")
+    normal_bin_list = parse_raw_data_to_bin_list(NORMAL_FOLDER, '0100')
+    log.append("== deal normal .. done")
     intercept_bin_list = intercept_data(fuzzing_bin_list, normal_bin_list)
     log.append("== intercept .. done")
     shuffle_data(intercept_bin_list)

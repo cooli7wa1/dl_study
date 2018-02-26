@@ -23,10 +23,10 @@ x = tf.placeholder(tf.float32, [None, 192])
 # b2 = tf.Variable(tf.zeros([2]))
 
 # 2
-W1 = tf.Variable(tf.truncated_normal(shape=[192, 80]))
-b1 = tf.Variable(tf.constant(0.1, shape=[80]))
-W2 = tf.Variable(tf.truncated_normal(shape=[80, 2]))
-b2 = tf.Variable(tf.constant(0.1, shape=[2]))
+# W1 = tf.Variable(tf.truncated_normal(shape=[192, 80]))
+# b1 = tf.Variable(tf.constant(0.1, shape=[80]))
+# W2 = tf.Variable(tf.truncated_normal(shape=[80, 2]))
+# b2 = tf.Variable(tf.constant(0.1, shape=[2]))
 
 # y1 = tf.matmul(x, W1) + b1
 # a1 = tf.nn.relu(y1)
@@ -34,14 +34,14 @@ b2 = tf.Variable(tf.constant(0.1, shape=[2]))
 # a2 = tf.nn.relu(y2)
 # y = a2
 
-y1 = tf.matmul(x, W1) + b1
-y2 = tf.matmul(y1, W2) + b2
-y = y2
+# y1 = tf.matmul(x, W1) + b1
+# y2 = tf.matmul(y1, W2) + b2
+# y = y2
 
 # 3
-# W = tf.Variable(tf.zeros([192, 2]))
-# b = tf.Variable(tf.zeros([2]))
-# y = tf.matmul(x, W) + b
+W = tf.Variable(tf.zeros([192, 2]))
+b = tf.Variable(tf.zeros([2]))
+y = tf.matmul(x, W) + b
 
 y_ = tf.placeholder(tf.float32, [None,2])
 
@@ -72,11 +72,14 @@ for i in range(EPOCH):
                                         y_: label_mini_batches[j]})
         loss = sess.run(cross_entropy, feed_dict={x: data_mini_batches[j],
                                         y_: label_mini_batches[j]})
+        var_y = sess.run(y, feed_dict={x: data_mini_batches[j],
+                                        y_: label_mini_batches[j]})
         acc_test = sess.run(accuracy, feed_dict={x: test_X, y_: test_y})
         acc_test_fuzzing = sess.run(accuracy, feed_dict={x: test_fuzzing_X, y_: test_fuzzing_y})
         acc_test_normal = sess.run(accuracy, feed_dict={x: test_normal_X, y_: test_normal_y})
         acc_train = sess.run(accuracy, feed_dict={x: train_X, y_: train_y})
         # print("acc_test %s, acc_test_fuzzing %s, acc_test_normal %s, acc_train %s, loss %s" %
         #       (acc_test, acc_test_fuzzing, acc_test_normal, acc_train, loss))
-        print("acc_test %s, acc_train %s" % (acc_test, acc_train))
+        # print("acc_test %s, acc_train %s" % (acc_test, acc_train))
+        print("var_y %s, acc_test %s, acc_train %s" % (var_y, acc_test, acc_train))
 
