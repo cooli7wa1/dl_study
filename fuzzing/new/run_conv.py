@@ -54,6 +54,7 @@ b_fc2 = bias_variable([2])
 
 y_conv=tf.matmul(h_fc1_drop, W_fc2) + b_fc2
 cross_entropy = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=y_, logits=y_conv))
+tf.summary.scalar('cross_entropy', cross_entropy)
 train_step = tf.train.AdamOptimizer(0.0001).minimize(cross_entropy)
 # train_step = tf.train.GradientDescentOptimizer(1e-5).minimize(cross_entropy) # 1e-5 0.006
 
@@ -63,6 +64,9 @@ init = tf.initialize_all_variables()
 
 sess = tf.InteractiveSession()
 sess.run(init)
+
+merged_summary_op = tf.summary.merge_all()
+summary_writer = tf.summary.FileWriter('./logs/', sess.graph)
 
 n = len(train_X)
 data_mini_batches = [
@@ -85,6 +89,12 @@ for i in range(EPOCH):
         loss_history.append(loss)
         acc_test = sess.run(accuracy, feed_dict={x: test_X, y_: test_y, keep_prob: 1.0})
         acc_train = sess.run(accuracy, feed_dict={x: train_X, y_: train_y, keep_prob: 1.0})
-        # print("acc_test %s, acc_train %s, loss %s" % (acc_test, acc_train, loss))
-        print("acc_test %s, acc_train %s" % (acc_test, acc_train))
+        print("acc_test %s, acc_train %s, loss %s" % (acc_test, acc_train, loss))
+        # print("acc_test %s, acc_train %s" % (acc_test, acc_train))
+        if j % 10 == 0:
+            summary_str = sess.run(merged_summary_op, feed_dict={x: data_mini_batches[j],
+                                        y_: label_mini_batches[j],
+                                        keep_prob: 0.5})
+
+            summary_writer.add_summary(summary_str, j)
 
