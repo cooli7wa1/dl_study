@@ -15,12 +15,14 @@ def bias_variable(shape):
 plt.ion()
 n_observations = 100
 fig, ax = plt.subplots(1, 1)
-xs = np.linspace(-3, 3, n_observations)
-ys = np.sin(xs) + np.random.uniform(-0.2, 0.2, n_observations)
-# ys = np.tan(xs) + np.random.uniform(-0.2, 0.2, n_observations)
+xs = np.linspace(-1, 2, n_observations)
+ys = np.sin(2*xs) + np.cos(3*xs) \
+     + np.random.uniform(-0.2, 0.2, n_observations)
 ax.scatter(xs, ys)
 fig.show()
 plt.draw()
+
+# plt.waitforbuttonpress()
 
 xs = xs.reshape([n_observations, 1]).repeat(INPUT_NUM, 1)
 ys = ys.reshape([n_observations, 1])
@@ -30,13 +32,13 @@ print(xs.shape, ys.shape)
 X = tf.placeholder(tf.float32, shape=[None, INPUT_NUM])
 Y = tf.placeholder(tf.float32, shape=[None, 1])
 
-W1 = weight_variable([INPUT_NUM, 100])
-b1 = bias_variable([100])
+W1 = weight_variable([INPUT_NUM, 200])
+b1 = bias_variable([200])
 y1 = tf.matmul(X, W1) + b1
 # a1 = tf.nn.sigmoid(y1)
 a1 = tf.nn.tanh(y1)
 
-W2 = weight_variable([100, 1])
+W2 = weight_variable([200, 1])
 b2 = bias_variable([1])
 # y2 = tf.matmul(a1, W2) + b2
 y2 = tf.matmul(a1, W2)
@@ -62,6 +64,7 @@ with tf.Session() as sess:
             cost, feed_dict={X: xs, Y: ys})
         print(training_cost)
 
+
         # if epoch_i % 100 == 0:
         #     ax.plot(xs, Y_pred.eval(feed_dict={X: xs}, session=sess),
         #             'k', alpha=epoch_i / n_epochs)
@@ -73,10 +76,12 @@ with tf.Session() as sess:
                     'k', alpha=1)
             fig.show()
             plt.draw()
+            # print(sess.run(W1))
             break
         # if np.abs(training_cost) < 0.025:
         #     break
         prev_training_cost = training_cost
+
 ax.set_ylim([-3, 3])
 fig.show()
 plt.waitforbuttonpress()
