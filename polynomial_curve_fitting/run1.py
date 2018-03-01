@@ -17,7 +17,6 @@ n_observations = 100
 fig, ax = plt.subplots(1, 1)
 xs = np.linspace(-3, 3, n_observations)
 ys = np.sin(xs) + np.random.uniform(-0.2, 0.2, n_observations)
-# ys = np.tan(xs) + np.random.uniform(-0.2, 0.2, n_observations)
 ax.scatter(xs, ys)
 fig.show()
 plt.draw()
@@ -62,21 +61,15 @@ with tf.Session() as sess:
             cost, feed_dict={X: xs, Y: ys})
         print(training_cost)
 
-        # if epoch_i % 100 == 0:
-        #     ax.plot(xs, Y_pred.eval(feed_dict={X: xs}, session=sess),
-        #             'k', alpha=epoch_i / n_epochs)
-        #     fig.show()
-        #     plt.draw()
-
         if np.abs(prev_training_cost - training_cost) < 0.00001:
             ax.plot(xs, Y_pred.eval(feed_dict={X: xs}, session=sess),
                     'k', alpha=1)
             fig.show()
             plt.draw()
             break
-        # if np.abs(training_cost) < 0.025:
-        #     break
         prev_training_cost = training_cost
+
 ax.set_ylim([-3, 3])
 fig.show()
+plt.draw()
 plt.waitforbuttonpress()

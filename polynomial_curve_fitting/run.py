@@ -48,9 +48,8 @@ with tf.Session() as sess:
 
         if np.abs(prev_training_cost - training_cost) < 0.000001:
             break
-        # if np.abs(training_cost) < 0.05:
-        #     break
         prev_training_cost = training_cost
+
 ax.set_ylim([-3, 3])
 fig.show()
 plt.waitforbuttonpress()

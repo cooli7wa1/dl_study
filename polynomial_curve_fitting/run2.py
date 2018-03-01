@@ -64,24 +64,15 @@ with tf.Session() as sess:
             cost, feed_dict={X: xs, Y: ys})
         print(training_cost)
 
-
-        # if epoch_i % 100 == 0:
-        #     ax.plot(xs, Y_pred.eval(feed_dict={X: xs}, session=sess),
-        #             'k', alpha=epoch_i / n_epochs)
-        #     fig.show()
-        #     plt.draw()
-
         if np.abs(prev_training_cost - training_cost) < 0.00001:
             ax.plot(xs, Y_pred.eval(feed_dict={X: xs}, session=sess),
                     'k', alpha=1)
             fig.show()
             plt.draw()
-            # print(sess.run(W1))
             break
-        # if np.abs(training_cost) < 0.025:
-        #     break
         prev_training_cost = training_cost
 
 ax.set_ylim([-3, 3])
 fig.show()
+plt.draw()
 plt.waitforbuttonpress()
