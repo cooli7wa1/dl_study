@@ -84,20 +84,17 @@ J = J + reg;
 
 % Theta1: 25*401
 % Theta2: 10*26
-delta3 = a3 - y_; % 5000*10
-delta2 = delta3*Theta2.*sigmoidGradient(z2);
+% y_: 5000*10
+delta3 = (a3 - y_)'; % 10*5000
+delta2 = (Theta2'*delta3).*([ones(m,1),sigmoidGradient(z2)]'); % 26*5000 
+Theta1_grad = (1/m)*(delta2(2:end,:)*X); % 25*401
+Theta2_grad = (1/m)*(delta3*a2); % 10*26
 
-
-
-
-
-
-
-
-
-
-
-
+% for regularization
+row1 = size(Theta1_grad, 1);
+row2 = size(Theta2_grad, 1);
+Theta1_grad = Theta1_grad + [zeros(row1,1), (lambda/m)*Theta1(:,2:end)];
+Theta2_grad = Theta2_grad + [zeros(row2,1), (lambda/m)*Theta2(:,2:end)];
 
 
 % -------------------------------------------------------------
@@ -106,6 +103,5 @@ delta2 = delta3*Theta2.*sigmoidGradient(z2);
 
 % Unroll gradients
 grad = [Theta1_grad(:) ; Theta2_grad(:)];
-
 
 end
