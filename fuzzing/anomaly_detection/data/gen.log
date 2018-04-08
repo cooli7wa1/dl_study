@@ -1,0 +1,26 @@
+origin data number: 38840
+non-repeat data number: 32696
+txt_list len 32696
+txt_list[0] len 431
+== deal fuzzing .. done
+origin data number: 17135
+non-repeat data number: 16287
+txt_list len 16287
+txt_list[0] len 435
+== deal normal .. done
+total_num 32696, train_num 16348, eval_num 9808, test_num 6540
+== devide pos .. done
+total_num 16287, train_num 0, eval_num 9772, test_num 6515
+== devide neg .. done
+deal with train
+data total len 16348
+label total len 16348
+== merge train .. done
+deal with eval
+data total len 19580
+label total len 19580
+== merge eval .. done
+deal with test
+data total len 13055
+label total len 13055
+== merge test .. done
