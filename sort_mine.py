@@ -1,63 +1,104 @@
-#coding: utf-8
+#coding:utf-8
 
+import sys
 import time
+import random
 
 
-# 简单选择法, O(n^2), O(1), 稳定
-def sort_number0(number):
-    n = len(number)
-    for i in range(n-1):
-        max_num = 0
-        for j in range(n-i):
-            if number[j] > number[max_num]:
-                max_num = j
-        number[n-i-1], number[max_num] = number[max_num], number[n-i-1]
-    return number
+# binggui, O(nlogn), O(n)
+def msort(seq):
+    if len(seq) <= 1:
+        return seq
+    mid = len(seq) / 2
+    left = msort(seq[:mid])
+    right = msort(seq[mid:])
+    return merge(left, right)
+
+def merge(left, right):
+    result = []
+    i, j = 0, 0
+    while i < len(left) and j < len(right):
+        if left[i] <= right[j]:
+            result.append(left[i])
+            i += 1
+        else:
+            result.append(right[j])
+            j += 1
+    result += left[i:]
+    result += right[i:]
+    return result
+
+# dui, O(nlogn), O(1)
+# def sift_down(arr, start, end):
+#     root = start
+#     while True:
+#         child = 2 * root + 1
+#         if child > end:
+#             break
+#
+#         if child + 1 <= end and arr[child] < arr[child + 1]:
+#             child += 1
+#
+#         if arr[root] < arr[child]:
+#             arr[root], arr[child] = arr[child], arr[root]
+#             root = child
+#         else:
+#             break
+#
+#
+# def msort(arr):
+#     first = len(arr) // 2 - 1
+#     for start in range(first, -1, -1):
+#         sift_down(arr, start, len(arr) - 1)
+#     for end in range(len(arr) -1, 0, -1):
+#         arr[0], arr[end] = arr[end], arr[0]
+#         sift_down(arr, 0, end - 1)
+#     return arr
 
 
-# 有问题 -> 简单选择法（改进）, O(n^2), O(1), 稳定
-# [1,2,0]结果是[2, 0, 1]
-def sort_number0_1(number):
-    n = len(number)
-    for i in range(n/2):
-        max_num, min_num = i, i
-        for j in range(i, n-i):
-            if number[j] > number[max_num]:
-                max_num = j
-            if number[j] < number[min_num]:
-                min_num = j
-        number[n-i-1], number[max_num] = number[max_num], number[n-i-1]
-        number[i], number[min_num] = number[min_num], number[i]
-    return number
+# maopao1, O(n^2), O(1)
+# def msort(mlist):
+#     n = len(mlist)
+#     for i in range(n-1):
+#         change = False
+#         for j in range(n-i-1):
+#             if mlist[j] < mlist[j+1]:
+#                 mlist[j], mlist[j+1] = mlist[j+1], mlist[j]
+#                 change = True
+#         if not change:
+#             break
+#     return mlist
 
+# maopao2, O(n^2), O(1)
+# def msort(mlist):
+#     n = len(mlist)
+#     for i in range(n-1):
+#         change = False
+#         idx = n-i-1
+#         for j in range(idx):
+#             if mlist[j] < mlist[j+1]:
+#                 mlist[j], mlist[j+1] = mlist[j+1], mlist[j]
+#                 change = True
+#                 idx = j
+#         if not change:
+#             break
+#     return mlist
 
-# 冒泡法, O(n^2), O(1), 稳定
-def sort_number1(number):
-    n = len(number)
-    for i in range(n):
-        for j in range(n-i-1):
-            if number[j] > number[j+1]:
-                number[j], number[j+1] = number[j+1], number[j]
-    return number
+# xuanze, O(n^2), O(1)
+# def msort(mlist):
+#     n = len(mlist)
+#     for i in range(n-1):
+#         max_idx = 0
+#         for j in range(n-i):
+#             if mlist[j] > mlist[max_idx]:
+#                 max_idx = j
+#         mlist[n-i-1], mlist[max_idx] = mlist[max_idx], mlist[n-i-1]
+#     return mlist
 
+mlist = random.sample(range(10000),10000)
 
-# 冒泡法（改进）, O(n^2), O(1), 稳定
-def sort_number1_1(number):
-    n = len(number)
-    for i in range(n):
-        change = False
-        for j in range(n-i-1):
-            if number[j] > number[j+1]:
-                number[j], number[j+1] = number[j+1], number[j]
-                change = True
-        if not change:
-            break
-    return number
-
-
-time_s = time.time()
-for i in range(100000):
-    result = sort_number0_1([1,2,0])
+ts = time.time()
+result = msort(mlist)
+te = time.time()
 print(result)
-time_e = time.time()
-print("%s" % (time_e - time_s))
+print(te-ts)
