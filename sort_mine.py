@@ -52,18 +52,18 @@ import random
 
 
 # kuaisu, O(nlogn~n^2), O(logn~n)
-def msort(mlist):
-    if len(mlist) <= 1:
-        return mlist
-    less = []
-    greater = []
-    base = mlist.pop()
-    for x in mlist:
-        if x < base:
-            less.append(x)
-        else:
-            greater.append(x)
-    return msort(less) + [base] + msort(greater)
+# def msort(mlist):
+#     if len(mlist) <= 1:
+#         return mlist
+#     less = []
+#     greater = []
+#     base = mlist.pop()
+#     for x in mlist:
+#         if x < base:
+#             less.append(x)
+#         else:
+#             greater.append(x)
+#     return msort(less) + [base] + msort(greater)
 
 
 # maopao1, O(n^2), O(1)
