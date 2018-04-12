@@ -1,11 +1,13 @@
 import collections
 
 
+# [0, 1, 2, 5, 3, 4]
 def breadth_first_search(graph, root):
     path = [0]
     print(path)
 
 
+# [0, 1, 2, 3, 5, 4]
 def depth_first_search(graph, root):
     path = []
     print(path)
