@@ -1,5 +1,5 @@
---- ./tmp_file	2018-04-13 16:47:47.500481394 +0800
-+++ /home/cooli7wa/ost1/official_release/2018_4_12_6763_o_v01_stable_2.7.0/Android/alps/./device/mediatek/common/BoardConfig.mk	2018-04-12 19:59:00.418996650 +0800
+--- ./tmp_file	2018-04-13 21:21:39.335136039 +0800
++++ /home/cooli7wa/ost1/official_release/2018_4_13_6763_o_v01_stable_2.7.0/Android/alps/./device/mediatek/common/BoardConfig.mk	2018-04-13 09:13:59.069139567 +0800
 @@ -116,20 +116,27 @@
  BOARD_PLAT_PRIVATE_SEPOLICY_DIR := \
          device/mediatek/sepolicy/basic/plat_private \

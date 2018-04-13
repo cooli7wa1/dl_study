@@ -22,9 +22,6 @@ MTK_GLOBAL_LDFLAGS:=
 # Use the connectivity Boardconfig
 include device/mediatek/common/connectivity/BoardConfig.mk
 
-# Use ago BoardConfig, if present
--include device/mediatek/common/ago/BoardConfig.mk
-
 # for flavor build base project assignment
 ifeq ($(strip $(MTK_BASE_PROJECT)),)
   MTK_PROJECT_NAME := $(subst full_,,$(TARGET_PRODUCT))
@@ -37,7 +34,7 @@ MTK_ROOT := vendor/mediatek/proprietary
 MTK_PATH_COMMON := vendor/mediatek/proprietary/custom/common
 MTK_PATH_CUSTOM := vendor/mediatek/proprietary/custom/$(MTK_PROJECT)
 MTK_PATH_CUSTOM_PLATFORM := vendor/mediatek/proprietary/custom/$(MTK_PLATFORM_DIR)
-KERNEL_CROSS_COMPILE:= $(abspath $(TOP))/prebuilts/gcc/linux-x86/arm/arm-eabi-6.3.1/bin/arm-eabi-
+KERNEL_CROSS_COMPILE:= $(abspath $(TOP))/prebuilts/gcc/linux-x86/arm/cit-arm-eabi-4.8/bin/arm-eabi-
 TARGET_BOARD_KERNEL_HEADERS :=
 ifneq ($(strip $(MTK_PLATFORM)),)
 TARGET_BOARD_KERNEL_HEADERS += device/mediatek/$(MTK_PLATFORM_DIR)/kernel-headers
@@ -89,26 +86,11 @@ USE_OPENGL_RENDERER := true
 #SELinux Policy File Configuration
 ifeq ($(strip $(MTK_BASIC_PACKAGE)), yes)
 BOARD_SEPOLICY_DIRS := \
-        device/mediatek/sepolicy/basic/non_plat \
-        device/mediatek/sepolicy/bsp/non_plat
-BOARD_PLAT_PUBLIC_SEPOLICY_DIRS := \
-        device/mediatek/sepolicy/basic/plat_public \
-        device/mediatek/sepolicy/bsp/plat_public
-BOARD_PLAT_PRIVATE_SEPOLICY_DIRS := \
-        device/mediatek/sepolicy/basic/plat_private \
-        device/mediatek/sepolicy/bsp/plat_private
-BOARD_PREBUILTS_BSP_PUBLIC_PLAT_DIRS := \
-        device/mediatek/sepolicy/basic/prebuilts/api/26.0/plat_public \
-        device/mediatek/sepolicy/bsp/prebuilts/api/26.0/plat_public
-BOARD_PREBUILTS_BSP_PRIVATE_PLAT_DIRS := \
-        device/mediatek/sepolicy/basic/prebuilts/api/26.0/plat_private \
-        device/mediatek/sepolicy/bsp/prebuilts/api/26.0/plat_private
-BOARD_COMPAT_MAPPING_CIL_DIRS := \
-        device/mediatek/sepolicy/bsp/private/compat/26.0/26.0.cil
-BOARD_COMPAT_MAPPING_IGNORE_CIL_DIRS := \
-        device/mediatek/sepolicy/bsp/private/compat/26.0/26.0.ignore.cil
-BOARD_26.0_NONPLAT_FILE := \
-        device/mediatek/sepolicy/bsp/prebuilts/api/26.0/nonplat_sepolicy.cil
+        device/mediatek/sepolicy/basic/non_plat
+BOARD_PLAT_PUBLIC_SEPOLICY_DIR := \
+        device/mediatek/sepolicy/basic/plat_public
+BOARD_PLAT_PRIVATE_SEPOLICY_DIR := \
+        device/mediatek/sepolicy/basic/plat_private
 endif
 ifeq ($(strip $(MTK_BSP_PACKAGE)), yes)
 BOARD_SEPOLICY_DIRS := \
@@ -120,18 +102,6 @@ BOARD_PLAT_PUBLIC_SEPOLICY_DIR := \
 BOARD_PLAT_PRIVATE_SEPOLICY_DIR := \
         device/mediatek/sepolicy/basic/plat_private \
         device/mediatek/sepolicy/bsp/plat_private
-BOARD_PREBUILTS_BSP_PUBLIC_PLAT_DIRS := \
-        device/mediatek/sepolicy/basic/prebuilts/api/26.0/plat_public \
-        device/mediatek/sepolicy/bsp/prebuilts/api/26.0/plat_public
-BOARD_PREBUILTS_BSP_PRIVATE_PLAT_DIRS := \
-        device/mediatek/sepolicy/basic/prebuilts/api/26.0/plat_private \
-        device/mediatek/sepolicy/bsp/prebuilts/api/26.0/plat_private
-BOARD_COMPAT_MAPPING_CIL_DIRS := \
-        device/mediatek/sepolicy/bsp/private/compat/26.0/26.0.cil
-BOARD_COMPAT_MAPPING_IGNORE_CIL_DIRS := \
-        device/mediatek/sepolicy/bsp/private/compat/26.0/26.0.ignore.cil
-BOARD_26.0_NONPLAT_FILE := \
-        device/mediatek/sepolicy/bsp/prebuilts/api/26.0/nonplat_sepolicy.cil
 endif
 ifneq ($(strip $(MTK_BASIC_PACKAGE)), yes)
 ifneq ($(strip $(MTK_BSP_PACKAGE)), yes)
@@ -147,29 +117,15 @@ BOARD_PLAT_PRIVATE_SEPOLICY_DIR := \
         device/mediatek/sepolicy/basic/plat_private \
         device/mediatek/sepolicy/bsp/plat_private \
         device/mediatek/sepolicy/full/plat_private
-BOARD_PREBUILTS_FULL_PUBLIC_PLAT_DIRS := \
-        device/mediatek/sepolicy/basic/prebuilts/api/26.0/plat_public \
-        device/mediatek/sepolicy/bsp/prebuilts/api/26.0/plat_public \
-        device/mediatek/sepolicy/full/prebuilts/api/26.0/plat_public
-BOARD_PREBUILTS_FULL_PRIVATE_PLAT_DIRS := \
-        device/mediatek/sepolicy/basic/prebuilts/api/26.0/plat_private \
-        device/mediatek/sepolicy/bsp/prebuilts/api/26.0/plat_private \
-        device/mediatek/sepolicy/full/prebuilts/api/26.0/plat_private
-BOARD_COMPAT_MAPPING_CIL_DIRS := \
-        device/mediatek/sepolicy/full/private/compat/26.0/26.0.cil
-BOARD_COMPAT_MAPPING_IGNORE_CIL_DIRS := \
-        device/mediatek/sepolicy/full/private/compat/26.0/26.0.ignore.cil
-BOARD_26.0_NONPLAT_FILE := \
-        device/mediatek/sepolicy/full/prebuilts/api/26.0/nonplat_sepolicy.cil
+
 endif
 endif
 
 BOARD_SEPOLICY_DIRS += $(wildcard device/mediatek/sepolicy/secure)
 
-ifneq ($(strip $(MTK_BASIC_PACKAGE)), yes)
+
 ifeq ($(strip $(MTK_YIQI_FONTS_FRAMEWORK_SUPPORT)), yes)
-BOARD_PLAT_PRIVATE_SEPOLICY_DIR +=  vendor/mediatek/proprietary/packages/3rd-party/lovelyfonts/lovelyfontsframework/sepolicy
-endif
+BOARD_SEPOLICY_DIRS +=  frameworks/base/lovelyfontsframework/sepolicy
 endif
 
 ifdef CUSTOM_MODEM
@@ -178,23 +134,11 @@ ifdef CUSTOM_MODEM
   else
     MTK_MODEM_MODULE_MAKEFILES := $(foreach item,$(CUSTOM_MODEM),$(firstword $(wildcard vendor/mediatek/proprietary/modem/$(patsubst %_prod,%,$(item))_prod/Android.mk vendor/mediatek/proprietary/modem/$(item)/Android.mk)))
   endif
-  MTK_MODEM_APPS_SEPOLICY_DIRS :=
-  $(foreach f,$(MTK_MODEM_MODULE_MAKEFILES),\
-    $(if $(strip $(MTK_MODEM_APPS_SEPOLICY_DIRS)),,\
-      $(eval MTK_MODEM_APPS_SEPOLICY_DIRS := $(wildcard $(patsubst %/Android.mk,%/sepolicy/o0,$(f))))\
-    )\
-  )
-  BOARD_SEPOLICY_DIRS += $(MTK_MODEM_APPS_SEPOLICY_DIRS)
+  BOARD_SEPOLICY_DIRS += $(wildcard $(patsubst %/Android.mk,%/sepolicy/o0,$(firstword $(MTK_MODEM_MODULE_MAKEFILES))))
 endif
 
 # Include an expanded selection of fonts
 EXTENDED_FONT_FOOTPRINT := true
-
-ifeq (yes,$(strip $(MTK_GMO_RAM_OPTIMIZE)))
-     BOARD_MTK_GMO_SYSTEM_SIZE_KB := 1400832
-     BOARD_MTK_GMO_VENDOR_SIZE_KB := 417792
-     BOARD_MTK_GMO_CACHE_SIZE_KB  := 114688
-endif
 
 # ptgen
 # Add MTK's MTK_PTGEN_OUT definitions
