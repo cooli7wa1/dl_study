@@ -39,6 +39,15 @@ def compute_ori_num(info_num):
     return int(s[0])+patch_NUM
 
 def make_ori_str(info_num):
+    before = []
+    after = []
+    for i in range(info_num, len(patch_lines)):
+        find = False
+        if re.match(r'^\+', patch_lines[i]):
+            before = patch_lines[info_num+1:i]
+            find = True
+        if find and re.match(r'^\+', patch_lines[i]):
+            after = patch_lines[i]
     pass
 
 for i in range(len(patch_lines)):
