@@ -14,8 +14,8 @@ target_file = args.target_file
 patch_file = args.patch_file
 check_number = args.check_number
 
-# target_file = "tmp_file_feature.mak"
-# patch_file = "tmp_patch_feature.mak"
+# target_file = "tmp_target_Makefile"
+# patch_file = "tmp_patch_Makefile"
 # check_number = 3
 
 with open(patch_file, 'r') as f:
@@ -86,7 +86,10 @@ def split_blocks(info_num_in_patch):
                 if patch_lines[i].strip != '':
                     interval += 1
         if find and not (re.match(r'^\+', patch_lines[i]) or patch_lines[i].strip() == ''):
-            end_in_patch = i - 1
+            if patch_lines[i - 1].strip() == '':
+                end_in_patch = i - 2
+            else:
+                end_in_patch = i - 1
             start = start_in_patch - info_num_in_patch - 1 + start_number_in_origin
             end = end_in_patch - info_num_in_patch - 1 + start_number_in_origin
             blocks.append([[start_in_patch,end_in_patch],[start,end],[interval]])
@@ -120,8 +123,11 @@ def make_block_str(block):
     return strip_str(before + after)
 
 f = open(RETURN_FILE, 'w')
+place_row_offset = 0
+origin_row_offset = 0
 for i in range(len(patch_lines)):
     if re.match(r'^@@', patch_lines[i]):
+        origin_offset = 0
         blocks = split_blocks(i)
         # print(blocks)
         for block in blocks:
@@ -129,8 +135,14 @@ for i in range(len(patch_lines)):
             block_str = make_block_str(block)
             # print(block_str)
             [place, prop, str] = find_correct_place(block_str, block[2])
+            # print(str)
             # print(place, prop)
-            # origin_start_line, origin_end_line, target_insert_line, match probability
-            f.write("%d %d %d %.02f\n" % (block[1][0], block[1][1], place,prop))
+            origin_start_line = block[1][0] + origin_row_offset
+            origin_end_line = block[1][1] + origin_row_offset
+            target_insert_line = place + place_row_offset
+            f.write("%d %d %d %.02f\n" % (origin_start_line, origin_end_line, target_insert_line, prop))
+            place_row_offset += block[1][1] - block[1][0] + 1
+            origin_offset += block[1][1] - block[1][0] + 1
+        origin_row_offset += origin_offset
 f.close()
 
