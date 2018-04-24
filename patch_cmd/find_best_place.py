@@ -1,6 +1,7 @@
 import difflib
 import argparse
 import re
+import math
 
 RETURN_FILE = './tmp_return.txt'
 
@@ -14,8 +15,8 @@ target_file = args.target_file
 patch_file = args.patch_file
 check_number = args.check_number
 
-# target_file = "tmp_target_Makefile"
-# patch_file = "tmp_patch_Makefile"
+# target_file = "tmp_target_tz_init.c"
+# patch_file = "tmp_patch_tz_init.c"
 # check_number = 3
 
 with open(patch_file, 'r') as f:
@@ -31,34 +32,57 @@ def strip_str(str):
 def compute_diff(str1, str2):
     return difflib.SequenceMatcher(None, str1, str2).ratio()
 
+def compute_single_score(prop):
+    return math.exp(1 / (1.5 - prop)) - math.exp(1 / 1.5)
+
+def compute_total_score(before_prop, after_prop):
+    before_score = compute_single_score(before_prop)
+    after_score = compute_single_score(after_prop)
+    total_score = (before_score + after_score) / 2
+    return total_score
+
 def find_correct_place(block_str, crawl):
     """
-    :param block_str: strip string
+    :param block_str: strip_str, [before_str, after_str]
     :param crawl: [pre_len, post_len]
-    :return: [place, prop, str]
+    :return: [place, before_prop, after_prop, score, str]
             place: insert line number in target file
-            prop: match probability
+            before_prop: before str match probability
+            after_prop: after str match probability
+            score: before and after str total score
             str: strip string
     """
-    max_prop, place, max_str = 0, 0, ""
+    before_str, after_str = block_str
+    # print(before_str, after_str)
+    place, before_prop, after_prop, score, str = 0, 0, 0, 0, ""
     i = 0
     while i <= len(target_lines)-sum(crawl):
-        n, j, str, p = 0, i, "", 0
+        n, j = 0, i
+        cur_place, cur_before_str, cur_after_str = 0, "", ""
         while j <= len(target_lines)-1 and n < sum(crawl):
             if target_lines[j].strip() is not '':
-                str += target_lines[j]
+                if n < crawl[0]:
+                    cur_before_str += target_lines[j]
+                else:
+                    cur_after_str += target_lines[j]
                 n += 1
             if n == crawl[0]:
-                p = j
+                cur_place = j
             j += 1
-        str = strip_str(str)
-        prop = compute_diff(str, block_str)
-        if prop > max_prop:
-            max_prop, place, max_str = prop, p, str
-            if prop == 1:
+        cur_before_str = strip_str(cur_before_str)
+        cur_after_str = strip_str(cur_after_str)
+        cur_before_prop = compute_diff(cur_before_str, before_str)
+        cur_after_prop = compute_diff(cur_after_str, after_str)
+        cur_score = compute_total_score(cur_before_prop, cur_after_prop)
+        if cur_score > score:
+            score, place, str = cur_score, cur_place, cur_before_str+cur_after_str
+            before_prop, after_prop = cur_before_prop, cur_after_prop
+            # print(cur_before_str, cur_after_str)
+            # print(cur_before_prop, cur_after_prop, cur_score)
+            if before_prop + after_prop == 2:
                 break
         i += 1
-    return [place+1, max_prop, max_str]
+    return [place+1, before_prop, after_prop, str]
 
 def split_blocks(info_num_in_patch):
     """
@@ -72,27 +96,27 @@ def split_blocks(info_num_in_patch):
             post: block post lines'number, often is  CHECK_LINES_NUMBER
     """
     blocks = []
-    start_number_in_origin = int(re.findall(r'\d+', patch_lines[info_num_in_patch])[0])
-    start_in_patch, end_in_patch, interval = 0, 0, 0
+    start_number_in_origin = int(re.findall(r'\d+', patch_lines[info_num_in_patch])[2])
+    start, end, interval = 0, 0, 0
     find = False
     for i in range(info_num_in_patch+1, len(patch_lines)):
         if re.match(r'^@@', patch_lines[i]):
             break
         if not find:
             if re.match(r'^\+', patch_lines[i]):
-                start_in_patch = i
+                start = i
                 find = True
             else:
                 if patch_lines[i].strip != '':
                     interval += 1
         if find and not (re.match(r'^\+', patch_lines[i]) or patch_lines[i].strip() == ''):
             if patch_lines[i - 1].strip() == '':
-                end_in_patch = i - 2
+                end = i - 2
             else:
-                end_in_patch = i - 1
-            start = start_in_patch - info_num_in_patch - 1 + start_number_in_origin
-            end = end_in_patch - info_num_in_patch - 1 + start_number_in_origin
-            blocks.append([[start_in_patch,end_in_patch],[start,end],[interval]])
+                end = i - 1
+            start_in_origin = start - info_num_in_patch - 1 + start_number_in_origin
+            end_in_origin = end - info_num_in_patch - 1 + start_number_in_origin
+            blocks.append([[start,end],[start_in_origin,end_in_origin],[interval]])
             find, interval = False, 1
     n = len(blocks)
     for i in range(n):
@@ -120,11 +144,10 @@ def make_block_str(block):
             n += 1
             if n >= post:
                 break
-    return strip_str(before + after)
+    return [strip_str(before), strip_str(after)]
 
 f = open(RETURN_FILE, 'w')
 place_row_offset = 0
-origin_row_offset = 0
 for i in range(len(patch_lines)):
     if re.match(r'^@@', patch_lines[i]):
         origin_offset = 0
@@ -134,15 +157,14 @@ for i in range(len(patch_lines)):
             # print(block)
             block_str = make_block_str(block)
             # print(block_str)
-            [place, prop, str] = find_correct_place(block_str, block[2])
+            [place, before_prop, after_prop, str] = find_correct_place(block_str, block[2])
             # print(str)
             # print(place, prop)
-            origin_start_line = block[1][0] + origin_row_offset
-            origin_end_line = block[1][1] + origin_row_offset
+            origin_start_line = block[1][0]
+            origin_end_line = block[1][1]
             target_insert_line = place + place_row_offset
-            f.write("%d %d %d %.02f\n" % (origin_start_line, origin_end_line, target_insert_line, prop))
+            # print(origin_start_line, origin_end_line, target_insert_line, prop)
+            f.write("%d %d %d %.02f %.02f\n" % (origin_start_line, origin_end_line, target_insert_line, before_prop, after_prop))
             place_row_offset += block[1][1] - block[1][0] + 1
-            origin_offset += block[1][1] - block[1][0] + 1
-        origin_row_offset += origin_offset
 f.close()
 
